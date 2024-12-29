@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+{% include 'include/nav.html' %}
+<div class="container">
+
+    <div class="row">
+        {% for doctor in doctors %}
+        <div class="col-6 mx-center">
+            <div class="card">
+                <div class="row">
+                    <div class="col">
+                        <div class="doctor-img">
+                            <img src="{{doctor.avatar.url}}" class="w-100 h-100" alt="">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h4>{{doctor.name}}</h4>
+                        <p>{{doctor.title}}</p>
+                        <!-- <p>Experience: {{doctor.experience}} years</p> -->
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop-{{forloop.counter}}">
+                            Send Message to Doctor
+                        </button>
+
+                        {% for doctor in doctors %}
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop-{{forloop.counter}}" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Send Message to Doctor <b>{{doctor.name}}</b></h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                    <form method="post" action="{% url 'ask-doctor' doctor.id %}">
+                                       {%  csrf_token %}
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Recipient's Name:</label>
+                                            <input type="text" class="form-control disabled" id="recipient-name" name="user" value="{{ request.user }}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message-text"  class="col-form-label">Message:</label>
+                                            <textarea class="form-control" name="query" id="message-text" rows="3"></textarea>
+                                        </div>
+                                        <button class="btn btn-info mt-2">Ask Doctor</button>
+                                    </form>
+                                    </div>
+                                    <!-- <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Understood</button>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

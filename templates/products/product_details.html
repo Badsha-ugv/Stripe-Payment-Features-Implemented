@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'include/nav.html' %}
+
+<div class="container">
+
+    <div class="row my-2">
+        <div class="col-8 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <img src="{{medicine.image.url}}" class="w-100 h-100" alt="">
+                        </div>
+                        <div class="col-6">
+                            <h4>{{medicine.name|capfirst}}</h4>
+                            <b class="mb-2">$ {{medicine.price}}</b>
+                            <p>{{medicine.description}}</p>
+                            <p>
+                                {% lorem %}
+                            </p>
+                            <a href="{% url 'add-to-cart' medicine.id %}" class="btn btn-info btn-sm">Add to Cart</a>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

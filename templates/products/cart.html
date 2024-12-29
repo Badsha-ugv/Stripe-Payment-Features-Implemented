@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'include/nav.html' %}
+<div class="container">
+
+    <div class="row my-2">
+        <div class="col-8 mt-2">
+            <table class="table table-bordered">
+                <tr>
+                    <th>Sl.</th>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                    <th>Action</th>
+                </tr>
+                {% for cart in cart_items %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{ cart.medicine.name}}</td>
+                    <td>{{cart.medicine.price}}</td>
+                    <td>
+                        <a href="{% url 'increment-cart' cart.id %}" class="btn btn-sm btn-info">+</a>
+                        <span>{{cart.quantity}}</span>
+                        <a href="{% url 'decrement-cart' cart.id %}" class="btn btn-sm btn-info">-</a>
+                    </td>
+                    <td>{{cart.total}}</td>
+                    <td>
+                        <a href="{% url 'remove-from-cart' cart.id %}" class="btn btn-sm btn-danger">Remove</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Cart is empty</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="col-4">
+            <div class="w-75 mx-auto">
+                <form action="{% url 'apply-coupon' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Coupon Code" name="coupon_code">
+                        <button class="btn btn-info" type="submit">Apply</button>
+                    </div>
+                </form>
+            </div>
+
+            
+
+            <div class="card w-75 mx-auto mt-2">
+                <div class="card-body">
+                    <h4>Cart Summary</h4>
+                    <hr>
+                    <p>Total: $ {{cart.total}}</p>
+                    <p>Discount: $ {{cart.discount}}</p>
+                    <hr>
+                    <p>Grand Total: $ {{cart.grand_total}}</p>
+                    <a href="{% url 'place-order' %}" class="btn btn-info btn-sm w-100">Go to Checkout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% include 'include/nav.html' %}
+<div class="container">
+
+
+    <div id="section">
+        <div class="row">
+            <div class="col-8">
+                <div class="row my-2">
+                    {% for medicine in medicines %}
+                    <div class="col-4">
+                        <div class="card">
+                            <div class="p-img">
+                                <img src="{{medicine.image.url}}" class="w-100 h-100" alt="">
+                            </div>
+                            <div class="card-body text-center">
+                                <h4>{{medicine.name|capfirst}}</h4>
+
+                                <b class="mb-2 ">$ {{medicine.price}}</b>
+                                <a href="{{medicine.get_absolute_url}}" class="btn btn-info btn-sm w-100">Details</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="col-4">
+                <div class="card w-75 mx-auto mt-2">
+                    <div class="user-avatar">
+                        <img src="{% static './images/no-img.png' %}" class="w-100 h-100" alt="">
+                    </div>
+                    <div class="user-info text-center">
+                        <h4>John Doe</h4>
+
+                        <div class="badge bg-warning my-2">
+                            <span class="badge-text">Coin</span>
+                            <span class="badge-text"> {% if wallet.balance %} {{wallet.balance}} {% else %} 0 {% endif %}</span>
+                        </div>
+                        <br>
+                        <a href="" class="btn btn-info btn-sm w-75 mx-auto mb-2">Add New Shipping Address</a>
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-primary btn-sm my-2 w-75 mx-auto" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop">
+                            Buy Coin
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <!-- <div class="modal-header"> -->
+                                        <!-- <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5> -->
+                                        <!-- <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div> -->
+                                    <div class="modal-body">
+                                        <form method="post" action="{% url 'coin-checkout' %}" >
+                                            {% csrf_token %}
+                                            <p class="text-center price-msg">
+                                                 50 Coin for 1 Dollar
+                                            </p>
+                                            <div class="form-group  d-flex w-50 mx-auto gap-3" id="coin-form">
+                                                
+                                              <button class="btn btn-info neg">-</button>
+                                              <input type="text" name="coin_amount" class="form-control text-center" value="50">
+                                              <button class="btn btn-info pos">+</button>
+                                            </div>
+                                            
+                                            <div class="form-group">
+                                                <button type="submit" class="btn btn-sm btn-success mt-3 mb-2">Checkout</button>
+                                            
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger "
+                                            data-bs-dismiss="modal">Close</button>
+                                        <!-- <button type="button" class="btn btn-primary">Understood</button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    // Get the input element
+    const inputField = $('#coin-form input');
+    const priceMsg = $('.price-msg');
+    // Handle positive button click
+    $('.pos').click(function(e) {
+        e.preventDefault();
+        let currentValue = parseInt(inputField.val());
+        inputField.val(currentValue + 50);
+        
+        // Update price message
+        priceMsg.text(`${currentValue + 50} Coin for ${(currentValue + 50)/50} Dollar`);
+
+    });
+
+    // Handle negative button click 
+    $('.neg').click(function(e) {
+        e.preventDefault();
+        let currentValue = parseInt(inputField.val());
+        // Prevent going below 0
+        if(currentValue >= 50) {
+            inputField.val(currentValue - 50);
+            priceMsg.text(`${currentValue - 50} Coin for ${(currentValue - 50)/50} Dollar`);
+
+        }
+    });
+});
+</script>
+
+{% endblock %}

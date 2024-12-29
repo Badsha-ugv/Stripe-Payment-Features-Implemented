@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+{% include 'include/nav.html' %}
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-8">
+            <h4>Medicine List</h4>
+            <table class="table table-striped">
+                <tr>
+                    <th>Sl.</th>
+                    <th>Medicine</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                {% for cart in cart_items %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{ cart.medicine.name}}</td>
+                    <td>{{cart.medicine.price}}</td>
+                    <td>{{ cart.quantity }}</td>
+                    <td> {{ cart.total }}</td>
+                </tr>
+                {% endfor %}
+
+                <tfoot>
+
+
+                    <tr>
+                        <td colspan="4" class="text-right fw-bold">Total:</td>
+                        <td>{{ cart.grand_total }}</td> <br>
+                    </tr>
+
+                    {% if cart.discount %}
+                    <tr>
+                        <td colspan="4" class="text-right fw-bold">Discount:</td>
+                        <td>{{ cart.discount }}</td> <br>
+                    </tr>
+                    {% endif %}
+
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="col-4 mt-3">
+            <div class="card p-2">
+                <div class="card-header d-flex justify-content-between">
+                    <h4 class="card-title">Shipping Address</h4>
+                    <a href="">Change</a>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li class="list-group-item"><b>Address:</b> {{ address.address}}</li>
+                        <li class="list-group-item"><b>City:</b> {{ address.city}}</li>
+                        <li class="list-group-item"><b>State:</b> {{ address.state}}</li>
+                        <li class="list-group-item"><b>Zip Code:</b> {{ address.zipcode}}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card p-3 my-2">
+                <div class="form-group">
+                    <label for="">Payment Method</label>
+                    <select name="payment_method" class="form-control" id="id_payment_method">
+                        <option value="">Select Payment Method</option>
+                        {% for method in payment_methods %}
+                        <option value="{{method.id}}">{{method.name}}</option>
+                        {% endfor %}
+
+
+                    </select>
+                </div>
+                <div id="checkout-form">
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+    $(document).ready(function () {
+        const submit_button = $('#checkout-form');
+        $('#id_payment_method').change(function () {
+            var payment_method = $(this).val();
+            console.log(typeof payment_method);
+            // change submit button if payment method is 1 set a button otherwise different button
+
+            console.log(submit_button);
+            if (payment_method === "2") {
+                submit_button.html(`<form action="{% url 'cart-checkout' %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-info btn-sm w-100 mt-2">
+                        Proceed to Payment
+                    </button>
+                </form>`)
+            } else if (payment_method === "1") {
+                submit_button.html(`<form action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group mt-2 " id="submit-btn">
+                        <button type="submit" class="btn btn-info btn-sm w-100">Checkout Now</button>
+                    </div>
+                </form>`)
+            }
+
+        });
+
+
+    });
+
+</script>
+
+{% endblock %}
