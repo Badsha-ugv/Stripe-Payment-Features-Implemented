@@ -55,7 +55,7 @@ def create_packages(request):
         package.save()
 
         return redirect('subscriptions')
-@require_POST
+# @require_POST
 @csrf_exempt
 def subscriptoin_checkout(request, package_id):
     user = request.user
