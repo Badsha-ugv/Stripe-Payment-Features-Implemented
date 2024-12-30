@@ -13,5 +13,5 @@ class PackagesAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    pass 
+    list_display = ['user', 'package', 'status', 'start_date', 'end_date' ]
 

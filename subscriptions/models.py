@@ -48,7 +48,7 @@ class Subscription(models.Model):
     stripe_subscriptoin_id = models.CharField(max_length=200,blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     package = models.ForeignKey(Packages, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, default='active')    
+    status = models.CharField(max_length=50, default='active')  # other status cancel  
 
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(null=True, blank=True)

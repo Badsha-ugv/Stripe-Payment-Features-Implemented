@@ -57,6 +57,64 @@
         </div>
     </div>
 
+    <div class="row">
+        {% for pkg in packages %}
+        <div class="col-4">
+            <div class="card shadow p-3">
+                <h3>{{pkg.name}}</h3>
+                <p>Price: {{pkg.price}}</p>
+                <p>Package Type: {{pkg.package_type}}</p>
+                <p>Features: 
+                    {% for feature in pkg.features.all %}
+                    {{feature.name}},
+                    {% endfor %}
+                </p>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop-{{pkg.id}}">
+                    Update Price
+                </button>
+                
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop-{{pkg.id}}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">{{pkg.name}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'update-package-price' pkg.id %}" method="post">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="">Price</label>
+                                        <input type="number" name="p_price" id="" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Package Type</label>
+                                        <select name="p_type" id="" class="form-select">
+                                            <option value="month" selected>Monthly</option>
+                                            <option value="year">Yearly</option>
+                                            <option value="week">Weekly</option>
+                                            <option value="day">Daily</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-info mt-2">Update</button>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{% url 'delete-package' pkg.id %}" class="btn btn-outline-danger mt-2">Delete Package</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
 
 </div>
 

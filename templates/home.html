@@ -38,12 +38,18 @@
                             <div class="row">
                                 {% for pkg in packages %}
                                 <div class="col-4">
-                                    <div class="card p-2">
+                                
+                                    <div class="card p-2 {% if pkg ==  subscription.package %} bg-dark text-white {% endif %}">
                                         <h4>{{pkg.name}}</h4>
                                         <p>{{pkg.package_type|capfirst}}</p>
                                         <strong>{{pkg.price}}</strong>
-                                        <a href="{% url 'subscriptoin-checkout' pkg.id %}">Get this Plan</a>
+                                        {% if pkg == subscription.package %}
+                                        <a href="{% url 'cancel-subscription' subscription.id %}" class="btn btn-sm btn-danger mt-2">Cancel Plan</a>
+                                        {% else %}
+                                        <a class="btn btn-sm btn-info mt-2" href="{% url 'subscriptoin-checkout' pkg.id %}">Get this Plan</a>
+                                        {% endif %}
                                     </div>
+                                    
                                 </div>
                                 {% endfor %}
                             </div>
@@ -59,7 +65,15 @@
                     </div>
                     <div class="user-info text-center">
                         <h4>John Doe</h4>
-
+                        {% if subscription %}
+                            <p class="text-success fw-bold border p-2">Subscribed to <br>
+                                {{ subscription.package.name}} /
+                                <sub>{{subscription.package.package_type|capfirst}}ly</sub>
+                            </p>
+                        {% else %}
+                        <p class="text-danger fw-bold">Not Subscribed.</p>
+                        {% endif %}
+                        
                         <div class="badge bg-warning my-2">
                             <span class="badge-text">Coin</span>
                             <span class="badge-text"> {% if wallet.balance %} {{wallet.balance}} {% else %} 0 {% endif %}</span>
@@ -71,6 +85,8 @@
                             data-bs-target="#staticBackdrop">
                             Buy Coin
                         </button>
+
+                        <a href="{% url 'customer-portal' %}" class="btn btn-sm btn-primary my-2 w-75 mx-auto">Customer portal</a>
 
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"

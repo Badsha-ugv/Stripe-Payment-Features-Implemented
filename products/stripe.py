@@ -232,6 +232,26 @@ def stripe_webhooks(request):
             end_date=datetime.fromtimestamp(data['current_period_end']),
             # status='active',
         )
+    if event.type == 'customer.subscription.updated':
+        data = event['data']['object'] 
+        metadata = data.get('metadata', {})
+        user_id = metadata.get('user_id')
+        package_id = metadata.get('package_id')
+        stripe_subscription_id = data['id']
+
+        print('user id sub', user_id, package_id, stripe_subscription_id)
+
+        user = User.objects.filter(id=user_id).first()
+        package = Packages.objects.get(id=package_id)
+
+        print('userr', user)
+        print('package', package)
+
+        Subscription.objects.filter(user=user, package=package).update(
+            stripe_subscriptoin_id=stripe_subscription_id,
+            end_date=datetime.fromtimestamp(data['current_period_end']),
+        )
+        
 
 
 
@@ -282,6 +302,5 @@ def coin_checkout(request):
         }
     )
     return redirect(checkout.url)
-
 
 
