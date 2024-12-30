@@ -6,14 +6,17 @@ from .models import Medicine, Category, Brand, PaymentMethod, Order, OrderItem
 from .forms import MedicineForm
 from .models import ShippingAddress
 from coins.models import CoinWallet
+from subscriptions.models import Packages
 
 def home(request):
     medicines = Medicine.objects.all()
     wallet = CoinWallet.objects.filter(user=request.user).first()
+    packages = Packages.objects.all()
 
     context = {
         'medicines': medicines,
-        'wallet': wallet
+        'wallet': wallet,
+        'packages': packages
     }
     return render(request, 'home.html', context)
 

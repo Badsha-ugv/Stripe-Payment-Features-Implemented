@@ -30,6 +30,26 @@
 
                     {% endfor %}
                 </div>
+
+                <div class="row my-3">
+                    <div class="col">
+                        <h3>Choose your plan!</h3>
+                        <div class="card p-3">
+                            <div class="row">
+                                {% for pkg in packages %}
+                                <div class="col-4">
+                                    <div class="card p-2">
+                                        <h4>{{pkg.name}}</h4>
+                                        <p>{{pkg.package_type|capfirst}}</p>
+                                        <strong>{{pkg.price}}</strong>
+                                        <a href="{% url 'subscriptoin-checkout' pkg.id %}">Get this Plan</a>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="col-4">

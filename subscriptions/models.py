@@ -8,7 +8,7 @@ class Features(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    price = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    # price = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -17,12 +17,22 @@ class Features(models.Model):
         return self.name
 
 
-
+PACKAGE_TYPES = [
+        ('month', 'Monthly'),
+        ('year', 'Yearly'),
+        ('week', 'Week'),
+        ('day', 'Day')
+    ]
 class Packages(models.Model):
     features = models.ManyToManyField(Features, related_name="package_features")
     name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    package_type = models.CharField(max_length=10, choices=PACKAGE_TYPES, default='month')
+    stripe_product_id = models.CharField(max_length=100, blank=True)
+    stripe_price_id = models.CharField(max_length=100, blank=True)
     is_active = models.BooleanField(default=True)
-    discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
+    # discount = models.DecimalField(max_digits=5, decimal_places=2, default=0)
 
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
@@ -32,19 +42,17 @@ class Packages(models.Model):
     
     def get_absolute_url(self):
         return reverse('package-detail', kwargs={'pk': self.pk})
-    @property
-    def total_price(self):
-        return sum([f.price for f in self.package_features.all()])
     
 
 class Subscription(models.Model):
+    stripe_subscriptoin_id = models.CharField(max_length=200,blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     package = models.ForeignKey(Packages, on_delete=models.CASCADE)
-    is_active = models.BooleanField(default=True)
-    
+    status = models.CharField(max_length=50, default='active')    
 
     start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(null=True, blank=True)
+    
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(auto_now=True)
     
@@ -54,28 +62,6 @@ class Subscription(models.Model):
     def get_absolute_url(self):
         return reverse('subscription-detail', kwargs={'pk': self.pk})
     
-    @property
-    def is_expired(self):
-        return timezone.now() > self.end_date
-    
-    @property
-    def is_active_package(self):
-        return self.package.is_active
-    
-    @property
-    def remaining_days(self):
-        if self.end_date:
-            return (self.end_date - timezone.now()).days
-        return 0
-    
-    @property
-    def total_price(self):
-        return self.package.total_price
-    
-    def save(self, *args, **kwargs):
-        if self.end_date is None:
-            self.end_date = self.start_date + timezone.timedelta(days=30)
-        super().save(*args, **kwargs)
 
 class Payment(models.Model):
     subscription = models.ForeignKey(Subscription, on_delete=models.CASCADE)
@@ -98,7 +84,4 @@ class Payment(models.Model):
     @property
     def is_expired(self):
         return timezone.now() > self.subscription.end_date
-    
-
-
     

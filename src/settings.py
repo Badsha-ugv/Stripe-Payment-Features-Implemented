@@ -134,19 +134,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-# stripe settings
-
 STRIPE_PUBLIC_KEY = 'pk_test_51MhVdoSI80DUGvJVmqHGBD9DUrbFnouO2ikPJxyWj4tpELlnViPbK2niqEgmxDvmXwjiUqNHzMXs8sfQsoW6RNM700HLRJ0ekb'
 STRIPE_SECRET_KEY = 'sk_test_51MhVdoSI80DUGvJV2cJX44q7luc0y6updGFvyxOR5kG6blPQk2AXXg5QNNyWn7hBU8k3u6oZEDlufGbaD6ytufcJ00n6mgp4Os'
 STRIPE_WEBHOOK_SECRET = 'whsec_3fbae828a232d2c22cfbe6e170fb1d26869fca7e6d3bf66acb81390e20a3f204'
-STRIPE_SUCCESS_URL = 'http://127.0.0.1:8000/order-success/'
-STRIPE_CANCEL_URL = 'http://127.0.0.1:8000/order-cancel/'
 
-
-# Authentication settings
-LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
-LOGOUT_REDIRECT_URL = 'home'
-
-# Email settings (for password reset)
+STRIPE_SUCCESS_URL = 'http://127.0.0.1:8080/order-success/'
+STRIPE_CANCEL_URL = 'http://127.0.0.1:8080/order-cancel/'

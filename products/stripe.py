@@ -6,6 +6,7 @@ from django.conf import settings
 from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from datetime import datetime
 
 from .models import (
     CartItem,
@@ -20,6 +21,7 @@ from .models import (
     OrderItem
 )
 from coins.models import Coin, CoinWallet
+from subscriptions.models import Packages, Subscription
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -207,7 +209,33 @@ def stripe_webhooks(request):
     #     session = event.data.object
     #     print('Checkout session completed:', session.id)
     #     # You can add additional handling here if needed
-    
+    if event.type == 'customer.subscription.created':
+        data = event['data']['object'] 
+        metadata = data.get('metadata', {})
+        user_id = metadata.get('user_id')
+        package_id = metadata.get('package_id')
+        stripe_subscription_id = data['id']
+
+        print('user id sub', user_id, package_id, stripe_subscription_id)
+
+        user = User.objects.filter(id=user_id).first()
+        package = Packages.objects.get(id=package_id)
+
+        print('userr', user)
+        print('package', package)
+
+        Subscription.objects.create(
+            user=user,
+            package=package,
+            stripe_subscriptoin_id=stripe_subscription_id,
+            # start_date=data['current_period_start'],
+            end_date=datetime.fromtimestamp(data['current_period_end']),
+            # status='active',
+        )
+
+
+
+
     return HttpResponse(status=200)
 
 @login_required
