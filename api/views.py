@@ -1,4 +1,6 @@
 # make api endpoint for the features
+import stripe
+
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,9 +10,12 @@ from products.models import (
     Brand, Category, Medicine,
     Cart, CartItem
 )
+from subscriptions.models import (
+    Features, Packages, Subscription
+)
 from .serializers import (
     BrandSerializer, CategorySerializer, MedicineSerializer,
-    CartSerializer
+    CartSerializer, FeaturesSerializer, PackagesSerializer
 )
 
 class ProductAPIView(APIView):
@@ -81,3 +86,43 @@ class CartItemAPIView(APIView):
         else:
             cart_item.remove()
             return Response({'message': 'Cart item deleted successfully'}, status=status.HTTP_200_OK)
+        
+class PackageAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        packages = Packages.objects.all()
+        serializer = PackagesSerializer(packages, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, *args, **kwargs):
+        print(request.data)
+        serializers = PackagesSerializer(data=request.data)
+        if serializers.is_valid():
+            name = serializers.validated_data['name']
+            price = serializers.validated_data['price']
+            package_type = serializers.validated_data['package_type']
+            features_list = serializers.validated_data['features']
+            
+            product = stripe.Product.create(name=name)
+            stripe_price = stripe.Price.create(
+                product=product.id,
+                unit_amount= int(price * 100),
+                currency='usd',
+                recurring={"interval": package_type}
+            )
+            package = Packages.objects.create(
+                name=name,
+                price=price,
+                package_type=package_type,
+                stripe_product_id=product.id,
+                stripe_price_id=stripe_price.id
+            )
+            package.features.set(features_list)
+            package.save()
+            return Response(serializers.data, status=status.HTTP_201_CREATED)
+        return Response(serializers.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+# class SubscriptionList(generics.ListAPIView):
+#     def get_queryset(self):
+#         return Subscription.objects.filter(user=self.request.user, status='active')
+    

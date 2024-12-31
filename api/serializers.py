@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from products.models import Brand, Category, Medicine, Cart, CartItem
-
+from subscriptions.models import Features, Packages
 class BrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = Brand
@@ -46,5 +46,22 @@ class CartSerializer(serializers.ModelSerializer):
     class Meta:
         model = Cart
         fields = ['id', 'grand_total', 'discount', 'coupon', 'shipping_address', 'cart_items']
-            
+
+
+
+class FeaturesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Features
+        fields = '__all__'
+
+class PackagesSerializer(serializers.ModelSerializer):
+    features_id = serializers.ListField( 
+        child=serializers.PrimaryKeyRelatedField(queryset=Features.objects.all()), source='features', write_only=True )
+
+    features = FeaturesSerializer(read_only=True,many=True)
+    class Meta:
+        model = Packages
+        fields = '__all__'
+
+    
 

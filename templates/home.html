@@ -43,7 +43,7 @@
                                 {% for pkg in packages %}
                                 <div class="col-4">
                                 
-                                    <div class="card p-2 {% if pkg ==  subscription.package %} bg-dark text-white {% endif %}">
+                                    <div class="card p-2 mt-2 {% if pkg ==  subscription.package %} bg-dark text-white {% endif %}">
                                         <h4>{{pkg.name}}</h4>
                                         <p>{{pkg.package_type|capfirst}}</p>
                                         <strong>{{pkg.price}}</strong>
