@@ -30,6 +30,8 @@ urlpatterns = [
     path('coins/', include('coins.urls')),
     path('subscriptions/', include('subscriptions.urls')),
 
+    path('api/', include('api.urls')),
+
 ]
 
 if settings.DEBUG:

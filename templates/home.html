@@ -15,9 +15,13 @@
                 <div class="row my-2">
                     {% for medicine in medicines %}
                     <div class="col-4">
-                        <div class="card">
+                        <div class="card mt-2">
                             <div class="p-img">
+                                {% if medicine.image %}
                                 <img src="{{medicine.image.url}}" class="w-100 h-100" alt="">
+                                {% else %}
+                                <img src="{% static './images/no-img.png' %}" class="w-100 h-100" alt="">
+                                {% endif %}
                             </div>
                             <div class="card-body text-center">
                                 <h4>{{medicine.name|capfirst}}</h4>

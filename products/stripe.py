@@ -160,55 +160,7 @@ def stripe_webhooks(request):
                 return HttpResponse(status=400)
             
 
-    # exit()
-
-    # if event.type == 'payment_intent.succeeded':
-    #     print('PaymentIntent succeeded')
-    #     payment_intent = event.data.object
-    #     print('PaymentIntent succeeded:', payment_intent.id)
-    #     metadata = payment_intent.metadata
-    #     print('Payment metadata:', metadata)
-        
-    #     cart_id = metadata.get('cart_id')
-    #     user_id = metadata.get('user_id')
-        
-    #     if cart_id and user_id:
-    #         try:
-    #             cart = Cart.objects.get(id=cart_id)
-    #             user = User.objects.get(id=user_id)
-                
-    #             # Create order
-    #             order = Order.objects.create(
-    #                 user=user,
-    #                 cart=cart,
-    #                 shipping_address=cart.shipping_address,
-    #                 grand_total=cart.grand_total,
-    #                 discount=cart.discount,
-    #                 subtotal=cart.total
-    #             )
-                
-    #             # Create order items
-    #             for cart_item in cart.cartitem_set.all():
-    #                 OrderItem.objects.create(
-    #                     order=order,
-    #                     medicine=cart_item.medicine,
-    #                     quantity=cart_item.quantity,
-    #                     price=cart_item.price,
-    #                     discount=cart_item.medicine.discount
-    #                 )
-                
-    #             # Clear cart after successful order
-    #             cart.clear_cart()
-    #             print(f'Order created successfully: {order.id}')
-                
-    #         except Exception as e:
-    #             print(f'Error creating order: {e}')
-    #             return HttpResponse(status=400)
     
-    # elif event.type == 'checkout.session.completed':
-    #     session = event.data.object
-    #     print('Checkout session completed:', session.id)
-    #     # You can add additional handling here if needed
     if event.type == 'customer.subscription.created':
         data = event['data']['object'] 
         metadata = data.get('metadata', {})
