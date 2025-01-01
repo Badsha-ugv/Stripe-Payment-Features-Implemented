@@ -12,7 +12,11 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-6">
+                            {% if medicine.images %}
                             <img src="{{medicine.image.url}}" class="w-100 h-100" alt="">
+                            {% else %}
+                            <img src="{% static './images/no-img.png' %}" class="w-100 h-100" alt="">
+                            {% endif %}
                         </div>
                         <div class="col-6">
                             <h4>{{medicine.name|capfirst}}</h4>
